@@ -1,0 +1,35 @@
+This package has three main parts:
+1. Data handler: preprocess the data.
+2. Graph classifier: train and validate the graph classifier on the data.
+3. Assessment: run randomized experiments and save the results.
+------------------------------------------------------------------------------
+* Data Handler
+Requisites: 
+1. The feature vectors and their corresponding labels should already be stored somewhere on the disk.
+2. data_params
+data_params is a dictionary that tells the Data Handler where and how to read the feature vectors and their labels, 
+whether a specific transform should be applied to the feature vectors before training/validating the classifier, 
+the range within which random datapoints are selected to from the training and validation datasets,
+and the dataset ID. data_params has the following components:
+    func - funtion which returns a datapoint (fv, lbl) based on its index (e.g. this function)
+    lbl_func - function which returns the list of labels of all datapoints in the original dataset
+    features_dp - path to where feature vectors are stored
+    spike_data - (297 x 1141 x m)-shaped array where m is the number of subgroups of neurons (optional - depends on what lbl_func is used)
+    group_id - index of the chosen subgroup of neurons which is being considered (optional - depends on what lbl_func is used)
+    transform - function applied to the original feature vectors (optional - defult: None, no transform is applied)
+    ind_min - minimum possible index for the selected datapoints
+    ind_max - maximum possible index for the selected datapoints
+    feature_id - string to identify the current settings
+
+How It Works:
+First, based on the user's decision to have a balanced/unbalanced dataset, random datapoints are selected to form the training/validation datasets; these datapoints are stated by their index in the original dataset.
+Then, the training/validation dataset is prepared given the indices from the previous step. 
+The user can update the indices and/or the sets independently from the autorun functions.
+
+Block Diagram:
+autorun ==> balanced/unbalanced ==> update indices ==> update sets ==> load individual datapoints from disk 
+==> utility functions to normalize the feature vectors in the training/validation set, and to show some statistics of the datasets
+** user can interject at any of the ==> steps.
+
+Example:
+
